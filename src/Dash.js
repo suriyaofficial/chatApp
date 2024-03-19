@@ -21,7 +21,9 @@ const YourComponent = () => {
     const { Search } = Input;
     const [api, contextHolder] = notification.useNotification();
     let jwt
-    let port = "http://localhost:3100"
+    // let port = "http://localhost:3100"
+    let port = "https://server-ag3p.onrender.com"
+
     let dat
     const socket = io(port);
     useEffect(() => {
@@ -132,6 +134,8 @@ const YourComponent = () => {
 
     }
     const checkUserNameAvailability = async (value) => {
+        jwt = document.cookie.split("jwtToken=")[1]
+
         console.log("🚀 ~ file: Login.js:14 ~ checkUserName")
         const data = JSON.stringify({
             "username": value
@@ -142,7 +146,7 @@ const YourComponent = () => {
             maxBodyLength: Infinity,
             url: `${port}/userNameCheck/`,
             headers: {
-                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InN1cml5YV9PZmZpY2lhbCIsImlhdCI6MTcwNzk3NTU3OH0.GCTBrqdmVpXXVde65s573FIOhV2n415Mu0euEM3jDJM',
+                'Authorization': `Bearer ${jwt}`,
                 'Content-Type': 'application/json'
             },
             data: data
@@ -248,9 +252,24 @@ const YourComponent = () => {
 
     };
     const logout = async (e) => {
-        setLoading(false);
-        document.cookie = "jwtToken" + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        window.location.reload();
+        try {
+            jwt = document.cookie.split("jwtToken=")[1]
+            console.log("🚀 ~ file: Dash.js:257 ~ logout ~ jwt:", jwt)
+            const response = await axios.post(`${port}/logout/`, {
+                headers: {
+                    Authorization: `Bearer ${jwt}`
+                }
+            });
+            console.log("🚀 ~ file: Dash.js:16 ~ fetchData ~ response:", response.data)
+            setLoading(false);
+            document.cookie = "jwtToken" + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            // window.location.reload();
+
+
+        } catch (error) {
+            console.log("🚀 ~ file: Dash.js:19 ~ fetchData ~ error:", error)
+            // setError(error);
+        }
 
     }
     const typing = async (e) => {
@@ -275,7 +294,7 @@ const YourComponent = () => {
             console.log("🚀 ~ file: Dash.js:260 ~ typing ~ error:", error)
 
         }
-        console.log("🚀 ~ file: Dash.js:269 ~ typing ~ typingUsers:", typingUsers)
+        // console.log("🚀 ~ file: Dash.js:269 ~ typing ~ typingUsers:", typingUsers)
     }
     const sendMsg = async (e) => {
         console.log("🚀 ~ file: Dash.js:230 ~ sendMsg ~ e:", newMessage)
@@ -330,11 +349,7 @@ const YourComponent = () => {
                                     <Button type="primary" onClick={sendMsg}>Submit</Button>
                                 </Space.Compact>
                             ]} >
-                                {typingUsers?.length > 0 && (
-                                    <div>
-                                        {typingUsers}
-                                    </div>
-                                )}
+
 
                                 <div
                                     className="chat-container"
@@ -355,6 +370,7 @@ const YourComponent = () => {
                                     ))}
                                 </div>
                             </Card>
+                            <div></div>
                         </div >
 
                     )}
