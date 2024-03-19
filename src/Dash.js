@@ -265,7 +265,7 @@ const YourComponent = () => {
             console.log("🚀 ~ file: Dash.js:16 ~ fetchData ~ response:", response.data)
             setLoading(false);
             document.cookie = "jwtToken" + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-            // window.location.reload();
+            window.location.reload();
 
 
         } catch (error) {
