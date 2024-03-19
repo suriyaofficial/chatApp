@@ -253,9 +253,11 @@ const YourComponent = () => {
     };
     const logout = async (e) => {
         try {
+            let data = { "mssg": "hi" };
+
             jwt = document.cookie.split("jwtToken=")[1]
             console.log("🚀 ~ file: Dash.js:257 ~ logout ~ jwt:", jwt)
-            const response = await axios.post(`${port}/logout/`, {
+            const response = await axios.post(`${port}/logout/`, data, {
                 headers: {
                     Authorization: `Bearer ${jwt}`
                 }
